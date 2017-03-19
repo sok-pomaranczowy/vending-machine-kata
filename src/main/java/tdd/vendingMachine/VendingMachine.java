@@ -44,11 +44,7 @@ public class VendingMachine {
 
     public double showShelvePrice(int shelveNumber) throws VendingMachineException {
         checkShelveInRange(shelveNumber);
-        if (shelves.get(shelveNumber).getProducts().isEmpty()) {
-            return .0;
-        } else {
-            return shelves.get(shelveNumber).getProducts().get(0).getPrice();
-        }
+        return shelves.get(shelveNumber).getPrice();
     }
 
     private void checkShelveInRange(int shelveNumber) throws VendingMachineException {
