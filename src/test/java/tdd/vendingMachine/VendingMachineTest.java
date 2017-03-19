@@ -10,6 +10,9 @@ import tdd.vendingMachine.exceptions.VendingMachineException;
 public class VendingMachineTest {
 
     public VendingMachine vendingMachine;
+    public final Product COCA_COLA = new Product("Coca cola 0.25l", Product.TYPE.BEVERAGE);;
+    public final Product MINERAL_WATER = new Product("mineral water 0.33l", Product.TYPE.BEVERAGE);;
+    public final Product CHOCOLATE_BAR = new Product("chocolate bar", Product.TYPE.FOOD);
 
     @Before
     public void onSetUp() {
@@ -28,36 +31,36 @@ public class VendingMachineTest {
 
     @Test
     public void givenAddProductsThenVendingMachineContainProduct() throws VendingMachineException {
-        vendingMachine.addProduct(new Product("Cocla cola o.25l", Product.TYPE.BEVERAGE), 0);
-        vendingMachine.addProduct(new Product("chocolate bar", Product.TYPE.FOOD), 1);
-        Assertions.assertThat(vendingMachine.getProducts()).contains(new Product("Cocla cola o.25l", Product.TYPE.BEVERAGE));
-        Assertions.assertThat(vendingMachine.getProducts()).contains(new Product("chocolate bar", Product.TYPE.FOOD));
+        vendingMachine.addProduct(COCA_COLA, 0);
+        vendingMachine.addProduct(CHOCOLATE_BAR, 1);
+        Assertions.assertThat(vendingMachine.getProducts()).contains(COCA_COLA);
+        Assertions.assertThat(vendingMachine.getProducts()).contains(CHOCOLATE_BAR);
     }
 
     @Test
     public void givenAddProductsOfTheSameTypeThenVendingMachineContainsProduct() throws VendingMachineException {
-        vendingMachine.addProduct(new Product("Cocla cola o.25l", Product.TYPE.BEVERAGE), 0);
-        vendingMachine.addProduct(new Product("mineral water 0.33l", Product.TYPE.BEVERAGE), 0);
-        Assertions.assertThat(vendingMachine.getProducts()).contains(new Product("Cocla cola o.25l", Product.TYPE.BEVERAGE));
-        Assertions.assertThat(vendingMachine.getProducts()).contains(new Product("mineral water 0.33l", Product.TYPE.BEVERAGE));
+        vendingMachine.addProduct(COCA_COLA, 0);
+        vendingMachine.addProduct(MINERAL_WATER, 0);
+        Assertions.assertThat(vendingMachine.getProducts()).contains(COCA_COLA);
+        Assertions.assertThat(vendingMachine.getProducts()).contains(MINERAL_WATER);
     }
 
     @Test(expected = VendingMachineException.class)
     public void givenAddProductsOnNonExistingShelveThenRaiseException() throws VendingMachineException {
-        vendingMachine.addProduct(new Product("Cocla cola o.25l", Product.TYPE.BEVERAGE), 7);
+        vendingMachine.addProduct(COCA_COLA, 7);
     }
 
     @Test(expected = VendingMachineException.class)
     public void givenAddProductsOfDifferentTypeToShelveThenRaiseException() throws VendingMachineException {
-        vendingMachine.addProduct(new Product("Cocla cola o.25l", Product.TYPE.BEVERAGE), 0);
-        vendingMachine.addProduct(new Product("chocolate bar", Product.TYPE.FOOD), 0);
+        vendingMachine.addProduct(COCA_COLA, 0);
+        vendingMachine.addProduct(CHOCOLATE_BAR, 0);
 
     }
 
     @Test
     public void givenAddProductsOnNonExistingShelveExceptionThenCorrectMessage() throws VendingMachineException {
         try {
-            vendingMachine.addProduct(new Product("Cocla cola o.25l", Product.TYPE.BEVERAGE), 7);
+            vendingMachine.addProduct(COCA_COLA, 7);
         } catch (VendingMachineException e) {
             Assertions.assertThat(e.getMessage()).isEqualTo("Shelve number: 7 does not exist. Choose shelve number between [0;1]");
         }
@@ -66,8 +69,8 @@ public class VendingMachineTest {
     @Test
     public void givenAddProductsOfDifferentTypeToShelveExceptionThenCorrectMessage() throws VendingMachineException {
         try {
-            vendingMachine.addProduct(new Product("Cocla cola o.25l", Product.TYPE.BEVERAGE), 0);
-            vendingMachine.addProduct(new Product("chocolate bar", Product.TYPE.FOOD), 0);
+            vendingMachine.addProduct(COCA_COLA, 0);
+            vendingMachine.addProduct(CHOCOLATE_BAR, 0);
         } catch (VendingMachineException e) {
             Assertions.assertThat(e.getMessage()).isEqualTo("Inserted product: chocolate bar is of type: FOOD but this " +
                 "shelve only accepts products of type: BEVERAGE");
@@ -90,7 +93,7 @@ public class VendingMachineTest {
     public void givenShelveWithOneProductTypeThenMayAddAnotherProductOfThatType() throws VendingMachineException {
         Shelve shelve = new Shelve();
         shelve.addProducts(new Product("Coca cola 0.25l", Product.TYPE.BEVERAGE));
-        shelve.addProducts(new Product("mineral water 0.33l", Product.TYPE.BEVERAGE));
+        shelve.addProducts(MINERAL_WATER);
         Assertions.assertThat(shelve.getProducts().size()).isEqualTo(2);
     }
 
@@ -98,7 +101,7 @@ public class VendingMachineTest {
     public void givenShelveWithOneProductTypeThenCannotAddProductOfOtherType() throws VendingMachineException {
         Shelve shelve = new Shelve();
         shelve.addProducts(new Product("Coca cola 0.25l", Product.TYPE.BEVERAGE));
-        shelve.addProducts(new Product("chocolate bar", Product.TYPE.FOOD));
+        shelve.addProducts(CHOCOLATE_BAR);
     }
 
     @Test
@@ -106,7 +109,7 @@ public class VendingMachineTest {
         Shelve shelve = new Shelve();
         try {
             shelve.addProducts(new Product("Coca cola 0.25l", Product.TYPE.BEVERAGE));
-            shelve.addProducts(new Product("chocolate bar", Product.TYPE.FOOD));
+            shelve.addProducts(CHOCOLATE_BAR);
         } catch (VendingMachineException e) {
             Assertions.assertThat(e.getMessage()).isEqualTo("Inserted product: chocolate bar is of type: FOOD but this " +
                 "shelve only accepts products of type: BEVERAGE");
