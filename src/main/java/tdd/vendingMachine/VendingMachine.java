@@ -30,10 +30,7 @@ public class VendingMachine {
     }
 
     public void addProduct(Product product, int shelveNumber) throws VendingMachineException {
-        if(shelveNumber > this.shelvesNumber-1 || shelveNumber < 0 ){
-            throw new VendingMachineException("Shelve number: "+shelveNumber+" does not exist. Choose shelve number between " +
-                "[0;"+(shelvesNumber-1)+"]");
-        }
+        checkShelveInRange(shelveNumber);
         shelves.get(shelveNumber).addProducts(product);
     }
 
@@ -46,14 +43,18 @@ public class VendingMachine {
     }
 
     public double showShelvePrice(int shelveNumber) throws VendingMachineException {
-        if(shelveNumber > this.shelvesNumber-1 || shelveNumber < 0 ){
-            throw new VendingMachineException("Shelve number: "+shelveNumber+" does not exist. Choose shelve number between " +
-                "[0;"+(shelvesNumber-1)+"]");
-        }
-        if(shelves.get(shelveNumber).getProducts().isEmpty()){
+        checkShelveInRange(shelveNumber);
+        if (shelves.get(shelveNumber).getProducts().isEmpty()) {
             return .0;
-        }else{
+        } else {
             return shelves.get(shelveNumber).getProducts().get(0).getPrice();
+        }
+    }
+
+    private void checkShelveInRange(int shelveNumber) throws VendingMachineException {
+        if (shelveNumber > this.shelvesNumber - 1 || shelveNumber < 0) {
+            throw new VendingMachineException("Shelve number: " + shelveNumber + " does not exist. Choose shelve number between " +
+                "[0;" + (shelvesNumber - 1) + "]");
         }
     }
 }
