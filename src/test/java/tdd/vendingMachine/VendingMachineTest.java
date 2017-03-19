@@ -25,9 +25,20 @@ public class VendingMachineTest {
 
     @Test
     public void givenAddProductsThenVendingMachineContainProduct(){
-        vendingMachine.addProducts("Cola drink 0.25l");
-        vendingMachine.addProducts("chocolate bar");
+        vendingMachine.addProduct("Cola drink 0.25l");
+        vendingMachine.addProduct("chocolate bar");
         Assertions.assertThat(vendingMachine.getProducts()).contains("Cola drink 0.25l");
         Assertions.assertThat(vendingMachine.getProducts()).contains("chocolate bar");
+    }
+
+    @Test
+    public void givenVendingMachineThenShelvesExist(){
+        Assertions.assertThat(vendingMachine.getShelves()).isNotNull();
+    }
+
+    @Test
+    public void givenVendingMachineThenShelveHasProduct(){
+        vendingMachine.addProduct("Cola drink 0.25l");
+        Assertions.assertThat(vendingMachine.getShelves().get(0).getProducts()).contains("Cola drink 0.25l");;
     }
 }
