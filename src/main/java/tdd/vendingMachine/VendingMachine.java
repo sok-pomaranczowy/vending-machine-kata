@@ -14,4 +14,8 @@ public class VendingMachine {
     public List<String> getProducts() {
         return products;
     }
+
+    public void addProducts(String product) {
+        products.add(product);
+    }
 }

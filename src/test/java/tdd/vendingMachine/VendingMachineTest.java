@@ -22,4 +22,12 @@ public class VendingMachineTest {
     public void givenVendingMachineThenProductsNotEmpty(){
         Assertions.assertThat(vendingMachine.getProducts()).isNotNull();
     }
+
+    @Test
+    public void givenAddProductsThenVendingMachineContainProduct(){
+        vendingMachine.addProducts("Cola drink 0.25l");
+        vendingMachine.addProducts("chocolate bar");
+        Assertions.assertThat(vendingMachine.getProducts()).contains("Cola drink 0.25l");
+        Assertions.assertThat(vendingMachine.getProducts()).contains("chocolate bar");
+    }
 }
