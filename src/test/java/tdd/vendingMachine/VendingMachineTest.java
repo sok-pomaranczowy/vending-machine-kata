@@ -78,4 +78,9 @@ public class VendingMachineTest {
         vendingMachine.addProduct(COCA_COLA,0);
         Assertions.assertThat(vendingMachine.showShelvePrice(0)).isEqualTo(COCA_COLA.getPrice());
     }
+
+    @Test
+    public void givenEmptyShelveNumberThenVendingMachineDisplayShowsZero() throws VendingMachineException {
+        Assertions.assertThat(vendingMachine.showShelvePrice(0)).isZero();
+    }
 }
