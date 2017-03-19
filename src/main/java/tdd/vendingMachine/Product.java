@@ -5,23 +5,19 @@ package tdd.vendingMachine;
  */
 public class Product {
     private String name;
-    private TYPE type;
+    private Double price;
 
-    public Product(String name, TYPE type) {
+    public Product(String name, Double price) {
         this.name = name;
-        this.type = type;
-    }
-
-    public TYPE getType() {
-        return type;
+        this.price  = price;
     }
 
     public String getName() {
         return name;
     }
 
-    public enum TYPE {
-        BEVERAGE, FOOD;
+    public Double getPrice() {
+        return price;
     }
 
     @Override
@@ -32,14 +28,14 @@ public class Product {
         Product product = (Product) o;
 
         if (name != null ? !name.equals(product.name) : product.name != null) return false;
-        return type == product.type;
+        return price != null ? price.equals(product.price) : product.price == null;
 
     }
 
     @Override
     public int hashCode() {
         int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (type != null ? type.hashCode() : 0);
+        result = 31 * result + (price != null ? price.hashCode() : 0);
         return result;
     }
 }

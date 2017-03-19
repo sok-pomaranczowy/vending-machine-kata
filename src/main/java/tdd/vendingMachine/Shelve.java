@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class Shelve {
     private List<Product> products;
-    private Product.TYPE typeOfProductsOnShelve;
+    private String typeOfProductsOnShelve;
 
     public Shelve() {
         this.products = new ArrayList<>();
@@ -23,14 +23,13 @@ public class Shelve {
     public void addProducts(Product product) throws VendingMachineException {
         if(products.isEmpty()){
             products.add(product);
-            typeOfProductsOnShelve = product.getType();
+            typeOfProductsOnShelve = product.getName();
         }
-        else if(typeOfProductsOnShelve == product.getType()){
+        else if(typeOfProductsOnShelve == product.getName()){
             products.add(product);
         }
         else{
-            throw new VendingMachineException("Inserted product: "+product.getName()+" is of type: "+ product.getType()
-                +" but this shelve only accepts products of type: "+typeOfProductsOnShelve);
+            throw new VendingMachineException("Inserted product: "+product.getName()+" but this shelve only accepts: "+typeOfProductsOnShelve);
         }
     }
 }

@@ -10,9 +10,9 @@ import tdd.vendingMachine.exceptions.VendingMachineException;
 public class VendingMachineTest {
 
     public VendingMachine vendingMachine;
-    public final Product COCA_COLA = new Product("Coca cola 0.25l", Product.TYPE.BEVERAGE);;
-    public final Product MINERAL_WATER = new Product("mineral water 0.33l", Product.TYPE.BEVERAGE);;
-    public final Product CHOCOLATE_BAR = new Product("chocolate bar", Product.TYPE.FOOD);
+    public final Product COCA_COLA = new Product("Coca cola 0.25l", 2.0);
+    public final Product MINERAL_WATER = new Product("mineral water 0.33l", 1.5);
+    public final Product CHOCOLATE_BAR = new Product("chocolate bar", 2.5);
 
     @Before
     public void onSetUp() {
@@ -40,9 +40,9 @@ public class VendingMachineTest {
     @Test
     public void givenAddProductsOfTheSameTypeThenVendingMachineContainsProduct() throws VendingMachineException {
         vendingMachine.addProduct(COCA_COLA, 0);
-        vendingMachine.addProduct(MINERAL_WATER, 0);
+        vendingMachine.addProduct(COCA_COLA, 0);
         Assertions.assertThat(vendingMachine.getProducts()).contains(COCA_COLA);
-        Assertions.assertThat(vendingMachine.getProducts()).contains(MINERAL_WATER);
+        Assertions.assertThat(vendingMachine.getProducts().size()).isEqualTo(2);
     }
 
     @Test(expected = VendingMachineException.class)
@@ -72,8 +72,7 @@ public class VendingMachineTest {
             vendingMachine.addProduct(COCA_COLA, 0);
             vendingMachine.addProduct(CHOCOLATE_BAR, 0);
         } catch (VendingMachineException e) {
-            Assertions.assertThat(e.getMessage()).isEqualTo("Inserted product: chocolate bar is of type: FOOD but this " +
-                "shelve only accepts products of type: BEVERAGE");
+            Assertions.assertThat(e.getMessage()).isEqualTo("Inserted product: "+CHOCOLATE_BAR.getName()+" but this shelve only accepts: "+COCA_COLA.getName());
         }
 
     }
@@ -85,22 +84,22 @@ public class VendingMachineTest {
 
     @Test
     public void givenVendingMachineAddProductThenShelveHasProduct() throws VendingMachineException {
-        vendingMachine.addProduct(new Product("Coca cola 0.25l", Product.TYPE.BEVERAGE), 0);
-        Assertions.assertThat(vendingMachine.getShelves().get(0).getProducts()).contains(new Product("Coca cola 0.25l", Product.TYPE.BEVERAGE));
+        vendingMachine.addProduct(COCA_COLA, 0);
+        Assertions.assertThat(vendingMachine.getShelves().get(0).getProducts()).contains(COCA_COLA);
     }
 
     @Test
     public void givenShelveWithOneProductTypeThenMayAddAnotherProductOfThatType() throws VendingMachineException {
         Shelve shelve = new Shelve();
-        shelve.addProducts(new Product("Coca cola 0.25l", Product.TYPE.BEVERAGE));
-        shelve.addProducts(MINERAL_WATER);
+        shelve.addProducts(COCA_COLA);
+        shelve.addProducts(COCA_COLA);
         Assertions.assertThat(shelve.getProducts().size()).isEqualTo(2);
     }
 
     @Test(expected = VendingMachineException.class)
     public void givenShelveWithOneProductTypeThenCannotAddProductOfOtherType() throws VendingMachineException {
         Shelve shelve = new Shelve();
-        shelve.addProducts(new Product("Coca cola 0.25l", Product.TYPE.BEVERAGE));
+        shelve.addProducts(COCA_COLA);
         shelve.addProducts(CHOCOLATE_BAR);
     }
 
@@ -108,11 +107,10 @@ public class VendingMachineTest {
     public void givenExceptionOnProductTypeMismatchThenExeptionMessageIsCorrect() {
         Shelve shelve = new Shelve();
         try {
-            shelve.addProducts(new Product("Coca cola 0.25l", Product.TYPE.BEVERAGE));
+            shelve.addProducts(COCA_COLA);
             shelve.addProducts(CHOCOLATE_BAR);
         } catch (VendingMachineException e) {
-            Assertions.assertThat(e.getMessage()).isEqualTo("Inserted product: chocolate bar is of type: FOOD but this " +
-                "shelve only accepts products of type: BEVERAGE");
+            Assertions.assertThat(e.getMessage()).isEqualTo("Inserted product: "+CHOCOLATE_BAR.getName()+" but this shelve only accepts: "+COCA_COLA.getName());
         }
     }
 }
