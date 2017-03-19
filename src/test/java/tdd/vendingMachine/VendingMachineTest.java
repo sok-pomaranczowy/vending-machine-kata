@@ -77,6 +77,11 @@ public class VendingMachineTest {
     }
 
     @Test
+    public void givenVendingMachineThenDisplaySaysWelcome(){
+        Assertions.assertThat(vendingMachine.getDisplay()).isEqualTo("Welcome!");
+    }
+
+    @Test
     public void givenShelveNumberThenVendingMachineDisplayShowsPrice() throws VendingMachineException {
         vendingMachine.addProduct(COCA_COLA,0);
         Assertions.assertThat(vendingMachine.showShelvePrice(0)).isEqualTo(COCA_COLA.getPrice());
@@ -88,12 +93,27 @@ public class VendingMachineTest {
     }
 
     @Test
-    public void givenCoinsThenProvideWares() throws VendingMachineException {
-        List<Coin> money= new ArrayList<>();
-        money.add(Coin.ONE);
-        money.add(Coin.FIFTY_CENTS);
+    public void givenCorrectAmountOfCoinsThenReturnProduct() throws VendingMachineException {
         vendingMachine.addProduct(MINERAL_WATER,0);
-        Assertions.assertThat(vendingMachine.buyProduct(0,money)).isNotNull();
-        Assertions.assertThat(vendingMachine.buyProduct(0,money)).isEqualTo(MINERAL_WATER);
+        vendingMachine.putCoin(Coin.ONE);
+        vendingMachine.putCoin(Coin.FIFTY_CENTS);
+        Assertions.assertThat(vendingMachine.selectProduct(0)).isEqualTo(MINERAL_WATER);
+    }
+
+    @Test
+    public void givenInsufficientAmountOfCoinsThenReturnProduct() throws VendingMachineException {
+        vendingMachine.addProduct(MINERAL_WATER,0);
+        vendingMachine.putCoin(Coin.FIFTY_CENTS);
+        Assertions.assertThat(vendingMachine.selectProduct(0)).isNull();
+    }
+
+    @Test
+    public void givenCoinsThenDisplayShowsRemainingValue() throws VendingMachineException {
+        vendingMachine.addProduct(MINERAL_WATER,0);
+        vendingMachine.putCoin(Coin.ONE);
+        vendingMachine.selectProduct(0);
+        Assertions.assertThat(vendingMachine.getDisplay()).isEqualTo("You need: "+
+            Double.toString(MINERAL_WATER.getPrice() - 1.0)
+            +" more.");
     }
 }
