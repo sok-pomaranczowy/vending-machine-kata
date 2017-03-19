@@ -4,21 +4,22 @@ import tdd.vendingMachine.exceptions.VendingMachineException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 /**
  * Created by sok_pomaranczowy on 19.03.17.
  */
 public class Shelve {
-    private List<Product> products;
+    private Stack<Product> products;
     private String typeOfProductsOnShelve;
     private double productPrice
         ;
     public Shelve() {
-        this.products = new ArrayList<>();
+        this.products = new Stack<>();
         this.productPrice = .0;
     }
 
-    public List<Product> getProducts() {
+    public Stack<Product> getProducts() {
         return products;
     }
 
@@ -28,15 +29,21 @@ public class Shelve {
 
     public void addProducts(Product product) throws VendingMachineException {
         if(products.isEmpty()){
-            products.add(product);
+            products.push(product);
             typeOfProductsOnShelve = product.getName();
             productPrice = product.getPrice();
         }
         else if(typeOfProductsOnShelve == product.getName()){
-            products.add(product);
+            products.push(product);
         }
         else{
-            throw new VendingMachineException("Inserted product: "+product.getName()+" but this shelve only accepts: "+typeOfProductsOnShelve);
+            throw new VendingMachineException("Inserted product: "
+                +product.getName()+" but this shelve only accepts: "
+                +typeOfProductsOnShelve);
         }
+    }
+
+    public Product removePtroduct(){
+        return products.pop();
     }
 }

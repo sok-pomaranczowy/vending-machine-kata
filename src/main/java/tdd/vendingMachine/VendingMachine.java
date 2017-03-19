@@ -22,7 +22,7 @@ public class VendingMachine {
         }
     }
 
-    public List<Product> getProducts() {
+    public List<Product> getAllProducts() {
         ArrayList<Product> allProducts = new ArrayList<>();
 
         for (Shelve shelve : shelves) {
@@ -63,8 +63,7 @@ public class VendingMachine {
     public Product selectProduct(int shelveNumber) throws VendingMachineException {
         checkShelveInRange(shelveNumber);
         if(transactionBalance >= shelves.get(shelveNumber).getPrice() && !shelves.get(shelveNumber).getProducts().isEmpty()){
-            Product product = shelves.get(shelveNumber).getProducts().get(0);
-            shelves.get(shelveNumber).getProducts().remove(0);
+            Product product = shelves.get(shelveNumber).removePtroduct();
             transactionBalance = .0;
             display = "Welcome!";
             return product;
