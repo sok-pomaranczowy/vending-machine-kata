@@ -72,4 +72,10 @@ public class VendingMachineTest {
     public void givenVendingMachineThenHasDisplay(){
         Assertions.assertThat(vendingMachine.getDisplay()).isNotNull();
     }
+
+    @Test
+    public void givenShelveNumberThenVendingMachineDisplayShowsPrice() throws VendingMachineException {
+        vendingMachine.addProduct(COCA_COLA,0);
+        Assertions.assertThat(vendingMachine.showShelvePrice(0)).isEqualTo(COCA_COLA.getPrice());
+    }
 }

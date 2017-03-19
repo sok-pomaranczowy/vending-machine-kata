@@ -44,4 +44,16 @@ public class VendingMachine {
     public String getDisplay() {
         return display;
     }
+
+    public double showShelvePrice(int shelveNumber) throws VendingMachineException {
+        if(shelveNumber > this.shelvesNumber-1 || shelveNumber < 0 ){
+            throw new VendingMachineException("Shelve number: "+shelveNumber+" does not exist. Choose shelve number between " +
+                "[0;"+(shelvesNumber-1)+"]");
+        }
+        if(shelves.get(shelveNumber).getProducts().isEmpty()){
+            return .0;
+        }else{
+            return shelves.get(shelveNumber).getProducts().get(0).getPrice();
+        }
+    }
 }
