@@ -53,4 +53,15 @@ public class VendingMachine {
                 "[0;" + (shelvesNumber - 1) + "]");
         }
     }
+
+    public Product buyProduct(int shelveNumber, List<Coin> money) throws VendingMachineException {
+        double sum = .0;
+        for(Coin coin : money){
+            sum += coin.getValue();
+        }
+        if(sum >= showShelvePrice(shelveNumber)){
+            return shelves.get(shelveNumber).getProducts().get(0);
+        }
+        return null;
+    }
 }

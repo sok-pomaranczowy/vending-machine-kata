@@ -7,6 +7,9 @@ import org.junit.Before;
 import org.junit.Test;
 import tdd.vendingMachine.exceptions.VendingMachineException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class VendingMachineTest {
 
     public VendingMachine vendingMachine;
@@ -82,5 +85,15 @@ public class VendingMachineTest {
     @Test
     public void givenEmptyShelveNumberThenVendingMachineDisplayShowsZero() throws VendingMachineException {
         Assertions.assertThat(vendingMachine.showShelvePrice(0)).isZero();
+    }
+
+    @Test
+    public void givenCoinsThenProvideWares() throws VendingMachineException {
+        List<Coin> money= new ArrayList<>();
+        money.add(Coin.ONE);
+        money.add(Coin.FIFTY_CENTS);
+        vendingMachine.addProduct(MINERAL_WATER,0);
+        Assertions.assertThat(vendingMachine.buyProduct(0,money)).isNotNull();
+        Assertions.assertThat(vendingMachine.buyProduct(0,money)).isEqualTo(MINERAL_WATER);
     }
 }
