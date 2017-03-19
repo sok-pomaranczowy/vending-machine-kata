@@ -9,8 +9,10 @@ public class VendingMachine {
 
     private List<Shelve> shelves;
     private final int shelvesNumber;
+    private String display;
 
     public VendingMachine(int shelvesNumber) {
+        this.display = "";
         this.shelvesNumber = shelvesNumber;
         this.shelves = new ArrayList<>(shelvesNumber);
         for (int i = 0; i < shelvesNumber; i++) {
@@ -37,5 +39,9 @@ public class VendingMachine {
 
     public List<Shelve> getShelves() {
         return shelves;
+    }
+
+    public String getDisplay() {
+        return display;
     }
 }

@@ -113,4 +113,9 @@ public class VendingMachineTest {
             Assertions.assertThat(e.getMessage()).isEqualTo("Inserted product: "+CHOCOLATE_BAR.getName()+" but this shelve only accepts: "+COCA_COLA.getName());
         }
     }
+
+    @Test
+    public void givenVendingMachineThenHasDisplay(){
+        Assertions.assertThat(vendingMachine.getDisplay()).isNotNull();
+    }
 }
