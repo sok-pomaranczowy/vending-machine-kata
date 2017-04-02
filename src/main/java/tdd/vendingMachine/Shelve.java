@@ -2,6 +2,7 @@ package tdd.vendingMachine;
 
 import tdd.vendingMachine.exceptions.VendingMachineException;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -12,18 +13,18 @@ import java.util.Stack;
 public class Shelve {
     private Stack<Product> products;
     private String typeOfProductsOnShelve;
-    private double productPrice
+    private BigDecimal productPrice
         ;
     public Shelve() {
         this.products = new Stack<>();
-        this.productPrice = .0;
+        this.productPrice = BigDecimal.ZERO;
     }
 
     public Stack<Product> getProducts() {
         return products;
     }
 
-    public double getPrice(){
+    public BigDecimal getPrice(){
         return productPrice;
     }
 
@@ -43,7 +44,7 @@ public class Shelve {
         }
     }
 
-    public Product removePtroduct(){
+    public Product removeProduct(){
         return products.pop();
     }
 }

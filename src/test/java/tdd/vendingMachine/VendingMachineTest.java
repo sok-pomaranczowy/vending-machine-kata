@@ -1,21 +1,19 @@
 package tdd.vendingMachine;
 
-import org.assertj.core.api.Assert;
 import org.assertj.core.api.Assertions;
-import org.assertj.core.api.Condition;
 import org.junit.Before;
 import org.junit.Test;
 import tdd.vendingMachine.exceptions.VendingMachineException;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.List;
 
 public class VendingMachineTest {
 
     public VendingMachine vendingMachine;
-    public final Product COCA_COLA = new Product("Coca cola 0.25l", 2.0);
-    public final Product MINERAL_WATER = new Product("mineral water 0.33l", 1.5);
-    public final Product CHOCOLATE_BAR = new Product("chocolate bar", 2.5);
+    public final Product COCA_COLA = new Product("Coca cola 0.25l", new BigDecimal(2.0));
+    public final Product MINERAL_WATER = new Product("mineral water 0.33l", new BigDecimal(1.5));
+    public final Product CHOCOLATE_BAR = new Product("chocolate bar", new BigDecimal(2.5));
 
     @Before
     public void onSetUp() {
@@ -29,23 +27,23 @@ public class VendingMachineTest {
 
     @Test
     public void givenVendingMachineThenProductsNotEmpty() {
-        Assertions.assertThat(vendingMachine.getProducts()).isNotNull();
+        Assertions.assertThat(vendingMachine.getAllProducts()).isNotNull();
     }
 
     @Test
     public void givenAddProductsThenVendingMachineContainProduct() throws VendingMachineException {
         vendingMachine.addProduct(COCA_COLA, 0);
         vendingMachine.addProduct(CHOCOLATE_BAR, 1);
-        Assertions.assertThat(vendingMachine.getProducts()).contains(COCA_COLA);
-        Assertions.assertThat(vendingMachine.getProducts()).contains(CHOCOLATE_BAR);
+        Assertions.assertThat(vendingMachine.getAllProducts()).contains(COCA_COLA);
+        Assertions.assertThat(vendingMachine.getAllProducts()).contains(CHOCOLATE_BAR);
     }
 
     @Test
     public void givenAddProductsOfTheSameTypeThenVendingMachineContainsProduct() throws VendingMachineException {
         vendingMachine.addProduct(COCA_COLA, 0);
         vendingMachine.addProduct(COCA_COLA, 0);
-        Assertions.assertThat(vendingMachine.getProducts()).contains(COCA_COLA);
-        Assertions.assertThat(vendingMachine.getProducts().size()).isEqualTo(2);
+        Assertions.assertThat(vendingMachine.getAllProducts()).contains(COCA_COLA);
+        Assertions.assertThat(vendingMachine.getAllProducts().size()).isEqualTo(2);
     }
 
     @Test(expected = VendingMachineException.class)
@@ -97,11 +95,20 @@ public class VendingMachineTest {
         vendingMachine.addProduct(MINERAL_WATER,0);
         vendingMachine.putCoin(Coin.ONE);
         vendingMachine.putCoin(Coin.FIFTY_CENTS);
-        Assertions.assertThat(vendingMachine.selectProduct(0)).isEqualTo(MINERAL_WATER);
+        Assertions.assertThat(vendingMachine.selectProduct(0).getProduct()).isEqualTo(MINERAL_WATER);
     }
 
     @Test
-    public void givenInsufficientAmountOfCoinsThenReturnProduct() throws VendingMachineException {
+    public void givenCorrectAmountOfCoinsAndBoughtProductThenDisplayShowsWelcomeMessage() throws VendingMachineException {
+        vendingMachine.addProduct(MINERAL_WATER,0);
+        vendingMachine.putCoin(Coin.ONE);
+        vendingMachine.putCoin(Coin.FIFTY_CENTS);
+        vendingMachine.selectProduct(0);
+        Assertions.assertThat(vendingMachine.getDisplay()).isEqualTo("Welcome!");
+    }
+
+    @Test
+    public void givenInsufficientAmountOfCoinsThenReturnProductIsNull() throws VendingMachineException {
         vendingMachine.addProduct(MINERAL_WATER,0);
         vendingMachine.putCoin(Coin.FIFTY_CENTS);
         Assertions.assertThat(vendingMachine.selectProduct(0)).isNull();
@@ -113,7 +120,51 @@ public class VendingMachineTest {
         vendingMachine.putCoin(Coin.ONE);
         vendingMachine.selectProduct(0);
         Assertions.assertThat(vendingMachine.getDisplay()).isEqualTo("You need: "+
-            Double.toString(MINERAL_WATER.getPrice() - 1.0)
+            MINERAL_WATER.getPrice().subtract(new BigDecimal(1.0))
             +" more.");
+    }
+
+    @Test
+    public void givenCorrectAmountOfCoinsAndBoughtProductThenVaultHasMoney() throws VendingMachineException {
+        vendingMachine.addProduct(MINERAL_WATER,0);
+        vendingMachine.putCoin(Coin.ONE);
+        vendingMachine.putCoin(Coin.FIFTY_CENTS);
+        Assertions.assertThat(vendingMachine.getVault().getTotalAmountHeld()).isEqualTo(MINERAL_WATER.getPrice());
+    }
+
+    @Test
+    public void givenVendingMachineThenVaultIsNotNull() throws VendingMachineException {
+        Assertions.assertThat(vendingMachine.getVault()).isNotNull();
+    }
+
+    @Test
+    public void givenCoinsAndSelectingProductThenReturnCorrectChange() throws VendingMachineException {
+        vendingMachine.addProduct(CHOCOLATE_BAR,0);
+        vendingMachine.putCoin(Coin.ONE);
+        vendingMachine.putCoin(Coin.ONE);
+        vendingMachine.putCoin(Coin.FIFTY_CENTS);
+        vendingMachine.putCoin(Coin.FIFTY_CENTS);
+        ProductAndChange productAndChange = vendingMachine.selectProduct(0);
+        Assertions.assertThat(productAndChange.getChange()).hasSize(1);
+        Assertions.assertThat(productAndChange.getChange()).contains(Coin.FIFTY_CENTS);
+    }
+
+    @Test
+    public void givenCoinsAndSelectingProductThenReturnCorrectProduct() throws VendingMachineException {
+        vendingMachine.addProduct(CHOCOLATE_BAR,0);
+        vendingMachine.putCoin(Coin.ONE);
+        vendingMachine.putCoin(Coin.ONE);
+        vendingMachine.putCoin(Coin.FIFTY_CENTS);
+        vendingMachine.putCoin(Coin.FIFTY_CENTS);
+        ProductAndChange productAndChange = vendingMachine.selectProduct(0);
+        Assertions.assertThat(productAndChange.getProduct()).isEqualTo(CHOCOLATE_BAR);
+    }
+
+    @Test(expected = VendingMachineException.class)
+    public void givenVendingMachineWithNoCoinsInVaultAndChangeThenException() throws VendingMachineException {
+        vendingMachine.addProduct(CHOCOLATE_BAR,0);
+        vendingMachine.putCoin(Coin.ONE);
+        vendingMachine.putCoin(Coin.TWO);
+        vendingMachine.selectProduct(0);
     }
 }

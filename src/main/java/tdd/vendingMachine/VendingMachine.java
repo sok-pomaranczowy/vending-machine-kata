@@ -2,6 +2,7 @@ package tdd.vendingMachine;
 
 import tdd.vendingMachine.exceptions.VendingMachineException;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,10 +11,12 @@ public class VendingMachine {
     private List<Shelve> shelves;
     private final int numberOfShelves;
     private String display;
-    private double transactionBalance;
+    private BigDecimal transactionBalance;
+    private Vault vault;
 
     public VendingMachine(int numberOfShelves) {
-        this.transactionBalance = .0;
+        this.vault = new Vault();
+        this.transactionBalance = BigDecimal.ZERO;
         this.display = "Welcome!";
         this.numberOfShelves = numberOfShelves;
         this.shelves = new ArrayList<>(numberOfShelves);
@@ -44,7 +47,7 @@ public class VendingMachine {
         return display;
     }
 
-    public double showShelvePrice(int shelveNumber) throws VendingMachineException {
+    public BigDecimal showShelvePrice(int shelveNumber) throws VendingMachineException {
         checkShelveInRange(shelveNumber);
         return shelves.get(shelveNumber).getPrice();
     }
@@ -57,21 +60,30 @@ public class VendingMachine {
     }
 
     public void putCoin(Coin coin) {
-        transactionBalance += coin.getValue();
+        transactionBalance = transactionBalance.add(coin.getValue());
+        vault.addCoin(coin);
     }
 
-    public Product selectProduct(int shelveNumber) throws VendingMachineException {
+    public ProductAndChange selectProduct(int shelveNumber) throws VendingMachineException {
         checkShelveInRange(shelveNumber);
-        if(transactionBalance >= shelves.get(shelveNumber).getPrice() && !shelves.get(shelveNumber).getProducts().isEmpty()){
-            Product product = shelves.get(shelveNumber).removePtroduct();
-            transactionBalance = .0;
+        if(transactionBalance.compareTo(shelves.get(shelveNumber).getPrice()) >= 0 &&
+            !shelves.get(shelveNumber).getProducts().isEmpty()){
+            Product product = shelves.get(shelveNumber).removeProduct();
+
             display = "Welcome!";
-            return product;
+            ArrayList change = ChangeCalculator.calculateChange(transactionBalance.subtract(product.getPrice()), vault.getVault());
+            return new ProductAndChange(product, change);
         }
         else{
-            double difference = shelves.get(shelveNumber).getPrice() - transactionBalance;
+            BigDecimal difference = shelves.get(shelveNumber).getPrice().subtract(transactionBalance);
             display = "You need: "+difference+" more.";
             return null;
         }
     }
+
+    public Vault getVault() {
+        return vault;
+    }
+
+
 }
