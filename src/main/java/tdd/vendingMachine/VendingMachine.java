@@ -5,6 +5,7 @@ import tdd.vendingMachine.exceptions.VendingMachineException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadPoolExecutor;
 
 public class VendingMachine {
 
@@ -81,6 +82,14 @@ public class VendingMachine {
             display = "You need: "+difference+" more.";
             return null;
         }
+    }
+
+    public List<Coin> cancel(){
+        vault.getVault().removeAll(transaction.getCoins());
+        List<Coin> coins = transaction.getCoins();
+        transaction.reset();
+        display = "Welcome!";
+        return coins;
     }
 
     public Vault getVault() {

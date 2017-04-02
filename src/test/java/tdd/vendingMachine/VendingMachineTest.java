@@ -7,6 +7,7 @@ import tdd.vendingMachine.exceptions.VendingMachineException;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 
 public class VendingMachineTest {
 
@@ -166,5 +167,34 @@ public class VendingMachineTest {
         vendingMachine.putCoin(Coin.ONE);
         vendingMachine.putCoin(Coin.TWO);
         vendingMachine.selectProduct(0);
+    }
+
+    @Test
+    public void givenCancelThenDisplayPrintWelcomeMessage() throws VendingMachineException {
+        vendingMachine.addProduct(CHOCOLATE_BAR,0);
+        vendingMachine.putCoin(Coin.ONE);
+        vendingMachine.putCoin(Coin.TWO);
+        vendingMachine.cancel();
+        Assertions.assertThat(vendingMachine.getDisplay()).isEqualTo("Welcome!");
+    }
+
+    @Test
+    public void givenCancelThenReturnCoins() throws VendingMachineException {
+        vendingMachine.addProduct(CHOCOLATE_BAR,0);
+        vendingMachine.putCoin(Coin.ONE);
+        vendingMachine.putCoin(Coin.TWO);
+        List<Coin> coins = vendingMachine.cancel();
+        Assertions.assertThat(coins).hasSize(2);
+        Assertions.assertThat(coins).contains(Coin.ONE);
+        Assertions.assertThat(coins).contains(Coin.TWO);
+    }
+
+    @Test
+    public void givenCancelThenVaultIsEmpty() throws VendingMachineException {
+        vendingMachine.addProduct(CHOCOLATE_BAR,0);
+        vendingMachine.putCoin(Coin.ONE);
+        vendingMachine.putCoin(Coin.TWO);
+        List<Coin> coins = vendingMachine.cancel();
+        Assertions.assertThat(vendingMachine.getVault().getVault()).hasSize(0);
     }
 }
