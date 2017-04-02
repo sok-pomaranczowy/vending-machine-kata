@@ -68,19 +68,19 @@ public class VendingMachine {
 
     public ProductAndChange selectProduct(int shelveNumber) throws VendingMachineException {
         checkShelveInRange(shelveNumber);
-        if (transaction.getBalance().compareTo(shelves.get(shelveNumber).getPrice()) >= 0 &&
-            !shelves.get(shelveNumber).getProducts().isEmpty()) {
+        boolean hasFundsAndShelveNotEmpty = transaction.getBalance().compareTo(shelves.get(shelveNumber).getPrice()) >= 0 &&
+            !shelves.get(shelveNumber).getProducts().isEmpty();
+        if (hasFundsAndShelveNotEmpty) {
             Product product = shelves.get(shelveNumber).removeProduct();
-
-            display = "Welcome!";
             List<Coin> change;
             try {
-                 change = ChangeCalculator.calculateChange(transaction.getBalance().subtract(product.getPrice()), vault.getVault());
+                change = ChangeCalculator.calculateChange(transaction.getBalance().subtract(product.getPrice()), vault.getVault());
             } catch (VendingMachineException e) {
                 change = reset();
                 display = e.getMessage();
-                return new ProductAndChange(null, change);
+                product = null;
             }
+            display = "Welcome!";
             transaction.reset();
             return new ProductAndChange(product, change);
         } else {
