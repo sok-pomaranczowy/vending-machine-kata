@@ -68,27 +68,37 @@ public class VendingMachine {
 
     public ProductAndChange selectProduct(int shelveNumber) throws VendingMachineException {
         checkShelveInRange(shelveNumber);
-        if(transaction.getBalance().compareTo(shelves.get(shelveNumber).getPrice()) >= 0 &&
-            !shelves.get(shelveNumber).getProducts().isEmpty()){
+        if (transaction.getBalance().compareTo(shelves.get(shelveNumber).getPrice()) >= 0 &&
+            !shelves.get(shelveNumber).getProducts().isEmpty()) {
             Product product = shelves.get(shelveNumber).removeProduct();
 
             display = "Welcome!";
-            ArrayList change = ChangeCalculator.calculateChange(transaction.getBalance().subtract(product.getPrice()), vault.getVault());
+            List<Coin> change;
+            try {
+                 change = ChangeCalculator.calculateChange(transaction.getBalance().subtract(product.getPrice()), vault.getVault());
+            } catch (VendingMachineException e) {
+                change = reset();
+                display = e.getMessage();
+                return new ProductAndChange(null, change);
+            }
             transaction.reset();
             return new ProductAndChange(product, change);
-        }
-        else{
+        } else {
             BigDecimal difference = shelves.get(shelveNumber).getPrice().subtract(transaction.getBalance());
-            display = "You need: "+difference+" more.";
+            display = "You need: " + difference + " more.";
             return null;
         }
     }
 
-    public List<Coin> cancel(){
+    public List<Coin> cancel() {
+        display = "Welcome!";
+        return reset();
+    }
+
+    private List<Coin> reset(){
         vault.getVault().removeAll(transaction.getCoins());
         List<Coin> coins = transaction.getCoins();
         transaction.reset();
-        display = "Welcome!";
         return coins;
     }
 

@@ -161,14 +161,6 @@ public class VendingMachineTest {
         Assertions.assertThat(productAndChange.getProduct()).isEqualTo(CHOCOLATE_BAR);
     }
 
-    @Test(expected = VendingMachineException.class)
-    public void givenVendingMachineWithNoCoinsInVaultAndChangeThenException() throws VendingMachineException {
-        vendingMachine.addProduct(CHOCOLATE_BAR,0);
-        vendingMachine.putCoin(Coin.ONE);
-        vendingMachine.putCoin(Coin.TWO);
-        vendingMachine.selectProduct(0);
-    }
-
     @Test
     public void givenCancelThenDisplayPrintWelcomeMessage() throws VendingMachineException {
         vendingMachine.addProduct(CHOCOLATE_BAR,0);
@@ -195,6 +187,35 @@ public class VendingMachineTest {
         vendingMachine.putCoin(Coin.ONE);
         vendingMachine.putCoin(Coin.TWO);
         List<Coin> coins = vendingMachine.cancel();
+        Assertions.assertThat(vendingMachine.getVault().getVault()).hasSize(0);
+    }
+
+    @Test
+    public void givenInsufficientAmountThenDisplayErrorMessage() throws VendingMachineException {
+        vendingMachine.addProduct(CHOCOLATE_BAR,0);
+        vendingMachine.putCoin(Coin.ONE);
+        vendingMachine.putCoin(Coin.TWO);
+        vendingMachine.selectProduct(0);
+        Assertions.assertThat(vendingMachine.getDisplay()).isEqualTo("Not enough coins in the machine to give change. Need: 0.50 more.");
+    }
+
+    @Test
+    public void givenInsufficientAmountThenReturnCoins() throws VendingMachineException {
+        vendingMachine.addProduct(CHOCOLATE_BAR,0);
+        vendingMachine.putCoin(Coin.ONE);
+        vendingMachine.putCoin(Coin.TWO);
+        ProductAndChange productAndChange = vendingMachine.selectProduct(0);
+        Assertions.assertThat(productAndChange.getChange()).hasSize(2);
+        Assertions.assertThat(productAndChange.getChange()).contains(Coin.ONE);
+        Assertions.assertThat(productAndChange.getChange()).contains(Coin.TWO);
+    }
+
+    @Test
+    public void givenInsufficientAmountThenVaultIsEmpty() throws VendingMachineException {
+        vendingMachine.addProduct(CHOCOLATE_BAR,0);
+        vendingMachine.putCoin(Coin.ONE);
+        vendingMachine.putCoin(Coin.TWO);
+        vendingMachine.selectProduct(0);
         Assertions.assertThat(vendingMachine.getVault().getVault()).hasSize(0);
     }
 }
