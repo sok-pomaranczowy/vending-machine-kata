@@ -11,12 +11,13 @@ public class VendingMachine {
     private List<Shelve> shelves;
     private final int numberOfShelves;
     private String display;
-    private BigDecimal transactionBalance;
     private Vault vault;
+    private Transaction transaction;
 
     public VendingMachine(int numberOfShelves) {
+        this.transaction = Transaction.getInstance();
+        this.transaction.reset();
         this.vault = new Vault();
-        this.transactionBalance = BigDecimal.ZERO;
         this.display = "Welcome!";
         this.numberOfShelves = numberOfShelves;
         this.shelves = new ArrayList<>(numberOfShelves);
@@ -60,22 +61,23 @@ public class VendingMachine {
     }
 
     public void putCoin(Coin coin) {
-        transactionBalance = transactionBalance.add(coin.getValue());
+        transaction.addCoin(coin);
         vault.addCoin(coin);
     }
 
     public ProductAndChange selectProduct(int shelveNumber) throws VendingMachineException {
         checkShelveInRange(shelveNumber);
-        if(transactionBalance.compareTo(shelves.get(shelveNumber).getPrice()) >= 0 &&
+        if(transaction.getBalance().compareTo(shelves.get(shelveNumber).getPrice()) >= 0 &&
             !shelves.get(shelveNumber).getProducts().isEmpty()){
             Product product = shelves.get(shelveNumber).removeProduct();
 
             display = "Welcome!";
-            ArrayList change = ChangeCalculator.calculateChange(transactionBalance.subtract(product.getPrice()), vault.getVault());
+            ArrayList change = ChangeCalculator.calculateChange(transaction.getBalance().subtract(product.getPrice()), vault.getVault());
+            transaction.reset();
             return new ProductAndChange(product, change);
         }
         else{
-            BigDecimal difference = shelves.get(shelveNumber).getPrice().subtract(transactionBalance);
+            BigDecimal difference = shelves.get(shelveNumber).getPrice().subtract(transaction.getBalance());
             display = "You need: "+difference+" more.";
             return null;
         }

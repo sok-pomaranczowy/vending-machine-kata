@@ -15,7 +15,6 @@ public class Transaction {
     private Transaction() {
         this.coins= new ArrayList<>();
         this.balance = new BigDecimal(.0);
-
     }
 
     public static Transaction getInstance() {
@@ -41,5 +40,9 @@ public class Transaction {
 
     public BigDecimal getBalance() {
         return balance;
+    }
+
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
     }
 }
