@@ -106,5 +106,7 @@ public class VendingMachine {
         return vault;
     }
 
-
+    public void setVault(Vault vault) {
+        this.vault = vault;
+    }
 }

@@ -14,6 +14,10 @@ public class Vault {
         vault = new ArrayList<>();
     }
 
+    public Vault(List<Coin> vault) {
+        this.vault = vault;
+    }
+
     public void addCoin(Coin c) {
         vault.add(c);
     }

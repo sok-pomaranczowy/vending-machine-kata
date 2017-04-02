@@ -218,4 +218,49 @@ public class VendingMachineTest {
         vendingMachine.selectProduct(0);
         Assertions.assertThat(vendingMachine.getVault().getVault()).hasSize(0);
     }
+
+    @Test
+    public void givenInitialVaultThenMachineCanReturnChange() throws VendingMachineException {
+        vendingMachine.addProduct(CHOCOLATE_BAR,0);
+        List<Coin> vaultContent = new ArrayList<>();
+
+        vaultContent.add(Coin.FIFTY_CENTS);
+        vaultContent.add(Coin.TWO);
+
+        vendingMachine.setVault(new Vault(vaultContent));
+        vendingMachine.putCoin(Coin.FIVE);
+        ProductAndChange productAndChange = vendingMachine.selectProduct(0);
+        Assertions.assertThat(productAndChange.getChange()).hasSize(2);
+        Assertions.assertThat(productAndChange.getChange()).contains(Coin.FIFTY_CENTS);
+        Assertions.assertThat(productAndChange.getChange()).contains(Coin.TWO);
+    }
+
+    @Test
+    public void givenInitialVaultThenVaultHasAddedMoney() throws VendingMachineException {
+        vendingMachine.addProduct(CHOCOLATE_BAR,0);
+        List<Coin> vaultContent = new ArrayList<>();
+
+        vaultContent.add(Coin.FIFTY_CENTS);
+        vaultContent.add(Coin.TWO);
+
+        vendingMachine.setVault(new Vault(vaultContent));
+        vendingMachine.putCoin(Coin.FIVE);
+        vendingMachine.selectProduct(0);
+        Assertions.assertThat(vendingMachine.getVault().getVault()).contains(Coin.FIVE);
+    }
+
+    @Test
+    public void givenInitialVaultThenMachinePrintsWelcomeMessage() throws VendingMachineException {
+        vendingMachine.addProduct(CHOCOLATE_BAR,0);
+        List<Coin> vaultContent = new ArrayList<>();
+
+        vaultContent.add(Coin.FIFTY_CENTS);
+        vaultContent.add(Coin.FIFTY_CENTS);
+        vaultContent.add(Coin.TWO);
+
+        vendingMachine.setVault(new Vault(vaultContent));
+        vendingMachine.putCoin(Coin.FIVE);
+        vendingMachine.selectProduct(0);
+        Assertions.assertThat(vendingMachine.getDisplay()).isEqualTo("Welcome!");
+    }
 }
